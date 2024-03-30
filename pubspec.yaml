@@ -21,4 +21,4 @@ dev_dependencies:
 flutter:
 
 executables:
-  get_mvc: bin/get_mvc.dart
+  get_mvc:

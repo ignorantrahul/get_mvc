@@ -15,9 +15,9 @@ void main(List<String> arguments) {
     ..addOption('name', abbr: 'n', help: 'File name (without extension)')
     ..addFlag('auth', abbr: 'a', help: 'Generate authentication files');
 
-  parser.addCommand('new')
-    ..addOption('name', abbr: 'n', help: 'Project name')
-    ..addOption('org', abbr: 'o', help: 'Organisation name');
+  parser
+      .addCommand('new')
+      .addOption('org', abbr: 'o', help: 'Organization name');
 
   final results = parser.parse(arguments);
 
@@ -71,10 +71,11 @@ void _handleCreateCommand(ArgResults command) {
   }
 }
 
-void _createFile(String category, String name) {
+void _createFile(String directoryPath, String name) {
   final fileName = '$name.dart';
-  final directory = Directory('lib/app/$category/$name');
+  final directory = Directory(directoryPath);
 
+  // Ensure that the directory exists
   if (!directory.existsSync()) {
     directory.createSync(recursive: true);
   }
@@ -86,7 +87,7 @@ void _createFile(String category, String name) {
 }
 
 void _handleNewProjectCommand(ArgResults command) {
-  final projectName = command['name'];
+  final projectName = command.rest[0];
   final orgName = command['org'];
 
   if (projectName == null) {
@@ -98,51 +99,51 @@ void _handleNewProjectCommand(ArgResults command) {
 }
 
 void _createFlutterProject(String projectName, String orgName) {
-  final projectDirectory = Directory(projectName);
+  List<String> flutterArgs = ['create', projectName];
 
-  if (!projectDirectory.existsSync()) {
-    projectDirectory.createSync();
+  if (orgName != null) {
+    flutterArgs.add('--org');
+    flutterArgs.add(orgName);
   }
 
-  Directory.current = projectDirectory;
-
-  List<String> flutterArgs = ['create'];
-  flutterArgs.add('--org');
-  flutterArgs.add(orgName);
-  flutterArgs.add(projectName);
-
-  final process = Process.runSync('flutter', flutterArgs);
+  final process = Process.runSync('flutter', flutterArgs, runInShell: true);
   if (process.exitCode == 0) {
-    _restructureProject();
+    _restructureProject(projectName);
     print('Flutter project created successfully.');
   } else {
     print('Error creating Flutter project.');
   }
 }
 
-void _restructureProject() {
-  final appDirectory = Directory('lib/app');
+void _restructureProject(String projectName) {
+  final appDirectory = Directory('$projectName/lib/app');
+
+  // Ensure that the project directory exists
+  if (!appDirectory.existsSync()) {
+    appDirectory.createSync(recursive: true);
+  }
 
   // Create necessary directories
   final directories = ['api', 'database', 'themes'];
   for (var dir in directories) {
-    final directory = Directory('${appDirectory.path}/$dir');
+    final directoryPath = '${appDirectory.path}/$dir';
+    final directory = Directory(directoryPath);
     if (!directory.existsSync()) {
       directory.createSync();
     }
+
+    // Create sample files
+    _createFile(directoryPath, '${dir}_service');
   }
 
-  // Create sample files
-  _createFile('api', 'api_service');
-  _createFile('database', 'database_helper');
-  _createFile('themes', 'app_theme');
+  print('Flutter project restructured successfully.');
 }
 
 void _showHelp(ArgParser parser) {
-  print('Usage: get_mcv <command>');
+  print('Usage: get_mvc <command>');
   print('Available commands:');
   print('  create - Create files for different components');
   print('  new project - Initialize a new Flutter project');
   print(
-      'Use "get_mcv <command> --help" for more information about a specific command.');
+      'Use "get_mvc <command> --help" for more information about a specific command.');
 }
