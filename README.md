@@ -1,18 +1,18 @@
-````markdown
-# get_mcv
+### GET_MCV
 
-A command-line interface (CLI) tool for generating Model-View-Controller (MVC) files in Flutter projects.
+A Larvel artisan command-line interface (CLI) tool for generating Model-View-Controller (MVC) files in Flutter projects.
 
 ## Installation
 
-To use `get_mcv`, you need to have Dart installed. You can install it via [Flutter](https://flutter.dev/docs/get-started/install) or [Dart SDK](https://dart.dev/get-dart).
+To use `get_mcv`, you need to have Dart installed.
+You can install it via [Flutter](https://flutter.dev/docs/get-started/install)
+or [Dart SDK](https://dart.dev/get-dart).
 
 Once Dart is installed, you can install `get_mcv` globally using the following command:
 
 ```bash
-dart pub global activate get_mcv
+flutter pub global activate get_mcv
 ```
-````
 
 Make sure to add the Dart SDK's bin directory to your system's PATH to access the installed binaries.
 
