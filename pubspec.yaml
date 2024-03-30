@@ -1,0 +1,11 @@
+name: get_mcv
+version: 1.0.0
+description: A Laravel Artisan like CLI tool for generating MVC files in Flutter projects for get
+homepage: https://github.com/ignorantrahul/get_mcv
+repository: https://github.com/ignorantrahul/get_mcv
+
+environment:
+  sdk: ">=3.0.1 <4.0.0"
+
+dependencies:
+  args: ^2.0.0
