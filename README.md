@@ -1,6 +1,6 @@
 ### GET_MCV
 
-A Larvel artisan command-line interface (CLI) tool for generating Model-View-Controller (MVC) files in Flutter projects.
+A Larvel artisan command-line interface (CLI) tool for generating Model-View-Controller (MVC) files in Flutter projects using GetX.
 
 ## Installation
 
@@ -16,9 +16,35 @@ flutter pub global activate get_mcv
 
 Make sure to add the Dart SDK's bin directory to your system's PATH to access the installed binaries.
 
+### Project Structure
+
+```
+project/
+├── lib/app/
+    │   ├── controllers/
+    │   │   ├── auth.dart
+    │   │   └── example.dart
+    │   ├── models/
+    │   │   └── example.dart
+    │   ├── services/
+    │   │   └── example.dart
+    │   └── views/
+    │       ├── example.dart
+    │       ├── login.dart
+    │       └── signup.dart
+├── pubspec.yaml
+└── README.md
+```
+
 ## Usage
 
 `get_mcv` provides commands to generate various MVC files in your Flutter project:
+
+## Create a New Project
+
+```bash
+get_mcv new project --n <project_name> --org <organisation_name>
+```
 
 ### Create a New File
 
@@ -51,7 +77,3 @@ Contributions are welcome! If you encounter any issues or have suggestions for i
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
-
-```
-
-```
