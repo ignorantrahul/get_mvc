@@ -1,5 +1,5 @@
-import 'dart:io';
 import 'package:args/args.dart';
+import 'dart:io';
 
 void main(List<String> arguments) {
   final parser = ArgParser();
@@ -7,26 +7,15 @@ void main(List<String> arguments) {
   parser.addFlag('help',
       abbr: 'h', negatable: false, help: 'Display usage information');
 
-  parser.addCommand(
-      'create',
-      (commandParser) {
-        commandParser.addOption('type',
-            abbr: 't', help: 'File type (model, view, controller, service)');
-        commandParser.addOption('name',
-            abbr: 'n', help: 'File name (without extension)');
-        commandParser.addFlag('auth',
-            abbr: 'a', help: 'Generate authentication files');
-      } as ArgParser?);
+  parser.addCommand('create')
+    ..addOption('type',
+        abbr: 't', help: 'File type (model, view, controller, service)')
+    ..addOption('name', abbr: 'n', help: 'File name (without extension)')
+    ..addFlag('auth', abbr: 'a', help: 'Generate authentication files');
 
-  parser.addCommand(
-      'new',
-      (commandParser) {
-        commandParser.addCommand('project', (subCommandParser) {
-          subCommandParser.addOption('name', abbr: 'n', help: 'Project name');
-          subCommandParser.addOption('org',
-              abbr: 'o', help: 'Organisation name');
-        });
-      } as ArgParser?);
+  parser.addCommand('new')
+    ..addOption('name', abbr: 'n', help: 'Project name')
+    ..addOption('org', abbr: 'o', help: 'Organisation name');
 
   final results = parser.parse(arguments);
 
