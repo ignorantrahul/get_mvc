@@ -43,7 +43,7 @@ project/
 ## Create a New Project
 
 ```bash
-get_mcv new project --n <project_name> --org <organisation_name>
+get_mcv new --n <project_name> --org <organisation_name>
 ```
 
 ### Create a New File
