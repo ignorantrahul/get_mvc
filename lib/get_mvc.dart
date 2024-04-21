@@ -58,10 +58,10 @@ void _handleCreateCommand(ArgResults command) {
       _createFile('models', name);
       break;
     case 'view':
-      _createFile('views', name);
+      _createFile('views', name, generateDummyView: true);
       break;
     case 'controller':
-      _createFile('controllers', name);
+      _createFile('controllers', name, generateDummyController: true);
       break;
     case 'service':
       _createFile('services', name);
@@ -71,7 +71,8 @@ void _handleCreateCommand(ArgResults command) {
   }
 }
 
-void _createFile(String directoryPath, String name) {
+void _createFile(String directoryPath, String name,
+    {bool generateDummyView = false, bool generateDummyController = false}) {
   final fileName = '$name.dart';
   final directory = Directory(directoryPath);
 
@@ -83,7 +84,45 @@ void _createFile(String directoryPath, String name) {
   final file = File('${directory.path}/$fileName');
   file.createSync();
 
+  // Write dummy data to the file
+  file.writeAsStringSync(
+    generateDummyView
+        ? _generateDummyView(name)
+        : generateDummyController
+            ? _generateDummyController(name)
+            : '',
+  );
+
   print('File created: ${file.path}');
+}
+
+String _generateDummyView(String name) {
+  return '''
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+class $name+View extends GetView<$name+Controller> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('$name')),
+      body: Center(
+        child: Text('This is the $name view'),
+      ),
+    );
+  }
+}
+  ''';
+}
+
+String _generateDummyController(String name) {
+  return '''
+import 'package:get/get.dart';
+
+class $name+Controller extends GetxController {
+  // Add your controller logic here
+}
+  ''';
 }
 
 void _handleNewProjectCommand(ArgResults command) {
