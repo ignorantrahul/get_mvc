@@ -10,14 +10,7 @@ final Logger logger = Logger();
 void main(List<String> args) {
   final parser = ArgParser();
 
-  parser.addCommand(
-    'create',
-    ArgParser()
-      ..addOption('type',
-          abbr: 't',
-          help: 'File type (model, view, controller, binding, service)')
-      ..addOption('name', abbr: 'n', help: 'File name (without extension)'),
-  );
+  parser.addCommand('create', ArgParser());
 
   parser.addCommand(
     'new',

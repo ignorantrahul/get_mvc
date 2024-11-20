@@ -1,6 +1,6 @@
-### GET_mvc
+### GET_MVC /GETM
 
-A Larvel artisan command-line interface (CLI) tool for generating Model-View-Controller (MVC) files in Flutter projects using GetX.This is Dart-based command-line tool for creating and organizing Flutter plugin components such as models, views, controllers, bindings, and services. This tool automates the generation of boilerplate code following the MVC pattern and GetX standards.
+A Larvel artisan like command-line interface (CLI) tool for generating Model-View-Controller (MVC) files in Flutter projects using GetX. This is Dart-based command-line tool for creating and organizing Flutter plugin components such as models, views, controllers, bindings, and services. This tool automates the generation of boilerplate code following the MVC pattern and GetX standards.
 
 
 ## Features
@@ -66,32 +66,32 @@ Commands Overview
 Create a Component:
 
 ```bash
-get_mvc create --type=<file-type> --name=<file-name>
+getm create type=filename
 ```
---type: The type of file to create. Options: model, view, controller, binding, service, or all.
---name: The base name for the file (without the extension).
+type: The type of file to create. Options: model, view, controller, binding, service, or all.
+name: The base name for the file (without the extension).
 Initialize a New Flutter Project:
 
 ```bash
-get_mvc new --project=<project-name> --org=<organization-name>
+getm new --project=<project-name> --org=<organization-name>
 ```
 Display Help Information:
 
 ```bash
-get_mvc help
+getm help
 ```
 Examples
 Generate a Model:
 
 ```bash
-get_mvc create --type=model --name=user
+getm create --type=model --name=user
 ```
 This command creates a user_model.dart file with a dummy model structure.
 
 Generate All Components for a Home Page:
 
 ```bash
-get_mvc create --type=all --name=home
+getm create all=filename
 ```
 This command creates:
 
@@ -103,11 +103,11 @@ home_service.dart
 Initialize a New Flutter Project:
 
 ```bash
-get_mvc new --project=my_plugin --org=com.example
+getm new --project=my_plugin --org=com.example
 ```
 This command creates a new Flutter project with the specified name and organization.
 
-`get_mvc` provides commands to generate various MVC files in your Flutter project:
+`getm` provides commands to generate various MVC files in your Flutter project:
 
 <!-- ## Create a New Project
 

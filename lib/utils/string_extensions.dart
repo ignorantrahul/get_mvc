@@ -10,7 +10,9 @@ extension StringExtension on String {
   }
 
   String toLowercaseWithUnderscores() {
-    return replaceAll(' ', '_').toLowerCase();
+    return split(' ')
+        .map((word) => word.replaceAll(' ', '_').toLowerCase())
+        .join();
   }
 }
 

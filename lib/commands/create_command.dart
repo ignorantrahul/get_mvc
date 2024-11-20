@@ -12,64 +12,66 @@ abstract class Command {
 class CreateCommand extends Command {
   @override
   void run(ArgResults results) {
-    final type = results['type'] as String?;
-    final name = results['name'] as String?;
-
-    if (type == null || name == null) {
-      logger.w('Please provide file type and name.');
+    if (results.rest.isEmpty) {
+      logger.w('Please provide a valid command in the format: type=name');
       return;
     }
+
+    final command = results.rest[0];
+
+    // Split the input into type:name
+    final parts = command.split('=');
+    if (parts.length != 2) {
+      logger.w('Invalid command format. Use type=name');
+      return;
+    }
+
+    final type = parts[0]; // model, view, controller, etc.
+    final name = parts[1]; // e.g., download, home, etc.
 
     if (type == 'all') {
-      _createAllFiles(name);
+      _createAllFiles(type, name);
       return;
-    }
-
-    switch (type) {
-      case 'model':
-        _createFile('models', '${name}_model', generateDummyModel: true);
-        break;
-      case 'view':
-        _createFile('views', '${name}_view', generateDummyView: true);
-        break;
-      case 'controller':
-        _createFile('controllers', '${name}_controller',
-            generateDummyController: true);
-        break;
-      case 'binding':
-        _createFile('bindings', '${name}_binding', generateDummyBinding: true);
-        break;
-      case 'service':
-        _createFile('services', '${name}_service');
-        break;
-      default:
-        logger.e('Unknown file type: $type');
+    } else if (type == 'model' ||
+        type == 'view' ||
+        type == 'controller' ||
+        type == 'binding' ||
+        type == 'service') {
+      _createFile(type, name,
+          generateDummyModel: type == 'model',
+          generateDummyView: type == 'view',
+          generateDummyController: type == 'controller',
+          generateDummyBinding: type == 'binding');
+      return;
+    } else {
+      logger.e('Unknown file type: $type');
+      return;
     }
   }
 
-  void _createAllFiles(String name) {
-    _createFile('models', '${name}_model', generateDummyModel: true);
-    _createFile('views', '${name}_view', generateDummyView: true);
-    _createFile('controllers', '${name}_controller',
-        generateDummyController: true);
-    _createFile('bindings', '${name}_binding', generateDummyBinding: true);
-    _createFile('services', '${name}_service');
+  void _createAllFiles(String type, String name) {
+    _createFile('model', name, generateDummyModel: true);
+    _createFile('view', name, generateDummyView: true);
+    _createFile('controller', name, generateDummyController: true);
+    _createFile('binding', name, generateDummyBinding: true);
+    _createFile('service', name);
     logger.i('All files for $name created successfully.');
   }
 
-  void _createFile(String directoryPath, String name,
+  void _createFile(String type, String name,
       {bool generateDummyModel = false,
       bool generateDummyView = false,
       bool generateDummyController = false,
       bool generateDummyBinding = false}) {
-    final fileName = '${name.toLowercaseWithUnderscores()}.dart';
-    final directory = Directory(directoryPath);
+    final appDirectory = Directory('lib/app');
+    final fileName = '${name.toLowercaseWithUnderscores()}_$type.dart';
+    final directory = Directory('${type}s');
 
     if (!directory.existsSync()) {
       directory.createSync(recursive: true);
     }
 
-    final file = File('${directory.path}/$fileName');
+    final file = File('${appDirectory.path}/${directory.path}/$fileName');
     file.createSync();
 
     file.writeAsStringSync(
