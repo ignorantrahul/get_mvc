@@ -1,188 +1,48 @@
-// ignore_for_file: avoid_print
-
 import 'package:args/args.dart';
-import 'dart:io';
+import 'package:logger/logger.dart';
+import 'commands/create_command.dart';
+import 'commands/new_project_command.dart';
+import 'commands/help_command.dart';
 
-void main(List<String> arguments) {
+// Initialize the logger
+final Logger logger = Logger();
+
+void main(List<String> args) {
   final parser = ArgParser();
 
-  parser.addFlag('help',
-      abbr: 'h', negatable: false, help: 'Display usage information');
-
-  parser.addCommand('create')
-    ..addOption('type',
-        abbr: 't', help: 'File type (model, view, controller, service)')
-    ..addOption('name', abbr: 'n', help: 'File name (without extension)')
-    ..addFlag('auth', abbr: 'a', help: 'Generate authentication files');
-
-  parser
-      .addCommand('new')
-      .addOption('org', abbr: 'o', help: 'Organization name');
-
-  final results = parser.parse(arguments);
-
-  if (results['help']) {
-    _showHelp(parser);
-    return;
-  }
-
-  final command = results.command;
-  if (command != null) {
-    switch (command.name) {
-      case 'create':
-        _handleCreateCommand(command);
-        break;
-      case 'new':
-        _handleNewProjectCommand(command);
-        break;
-      default:
-        print('Unknown command: ${command.name}');
-        _showHelp(parser);
-    }
-  } else {
-    print('Please provide a command. Use --help for usage information.');
-  }
-}
-
-void _handleCreateCommand(ArgResults command) {
-  final type = command['type'];
-  final name = command['name'];
-
-  if (type == null || name == null) {
-    print('Please provide file type and name.');
-    return;
-  }
-
-  switch (type) {
-    case 'model':
-      _createFile('models', name);
-      break;
-    case 'view':
-      _createFile('views', name, generateDummyView: true);
-      break;
-    case 'controller':
-      _createFile('controllers', name, generateDummyController: true);
-      break;
-    case 'service':
-      _createFile('services', name);
-      break;
-    default:
-      print('Unknown file type: $type');
-  }
-}
-
-void _createFile(String directoryPath, String name,
-    {bool generateDummyView = false, bool generateDummyController = false}) {
-  final fileName = '$name.dart';
-  final directory = Directory(directoryPath);
-
-  // Ensure that the directory exists
-  if (!directory.existsSync()) {
-    directory.createSync(recursive: true);
-  }
-
-  final file = File('${directory.path}/$fileName');
-  file.createSync();
-
-  // Write dummy data to the file
-  file.writeAsStringSync(
-    generateDummyView
-        ? _generateDummyView(name)
-        : generateDummyController
-            ? _generateDummyController(name)
-            : '',
+  parser.addCommand(
+    'create',
+    ArgParser()
+      ..addOption('type',
+          abbr: 't',
+          help: 'File type (model, view, controller, binding, service)')
+      ..addOption('name', abbr: 'n', help: 'File name (without extension)'),
   );
 
-  print('File created: ${file.path}');
-}
+  parser.addCommand(
+    'new',
+    ArgParser()
+      ..addOption('project', help: 'Project name')
+      ..addOption('org', abbr: 'o', help: 'Organization name'),
+  );
 
-String _generateDummyView(String name) {
-  return '''
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+  parser.addCommand('help', ArgParser());
 
-class $name+View extends GetView<$name+Controller> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('$name')),
-      body: Center(
-        child: Text('This is the $name view'),
-      ),
-    );
-  }
-}
-  ''';
-}
+  final results = parser.parse(args);
 
-String _generateDummyController(String name) {
-  return '''
-import 'package:get/get.dart';
-
-class $name+Controller extends GetxController {
-  // Add your controller logic here
-}
-  ''';
-}
-
-void _handleNewProjectCommand(ArgResults command) {
-  final projectName = command.rest[0];
-  final orgName = command['org'];
-
-  if (projectName == null) {
-    print('Please provide a project name.');
-    return;
-  }
-
-  _createFlutterProject(projectName, orgName);
-}
-
-void _createFlutterProject(String projectName, String orgName) {
-  List<String> flutterArgs = ['create', projectName];
-
-  if (orgName != null) {
-    flutterArgs.add('--org');
-    flutterArgs.add(orgName);
-  }
-
-  final process = Process.runSync('flutter', flutterArgs, runInShell: true);
-  if (process.exitCode == 0) {
-    _restructureProject(projectName);
-    print('Flutter project created successfully.');
+  if (results.command == null) {
+    logger.w('Please provide a command. Use --help for usage information.');
   } else {
-    print('Error creating Flutter project.');
-  }
-}
-
-void _restructureProject(String projectName) {
-  final appDirectory = Directory('$projectName/lib/app');
-
-  // Ensure that the project directory exists
-  if (!appDirectory.existsSync()) {
-    appDirectory.createSync(recursive: true);
-  }
-
-  // Create necessary directories
-  final directories = ['api', 'database', 'themes'];
-  for (var dir in directories) {
-    final directoryPath = '${appDirectory.path}/$dir';
-    final directory = Directory(directoryPath);
-    if (!directory.existsSync()) {
-      directory.createSync();
+    switch (results.command!.name) {
+      case 'create':
+        CreateCommand().run(results.command!);
+        break;
+      case 'new':
+        NewProjectCommand().run(results.command!);
+        break;
+      case 'help':
+        HelpCommand().run(results.command!);
+        break;
     }
-
-    // Create sample files
-    _createFile(directoryPath, '${dir}_service');
   }
-
-  print('Flutter project restructured successfully.');
-}
-
-void _showHelp(ArgParser parser) {
-  print('Usage: get_mvc <command>');
-  print('Available commands:');
-  print('  create - Create files for different components');
-  print('  new project - Initialize a new Flutter project');
-  print(
-      'Use "get_mvc <command> --help" for more information about a specific command.');
 }
