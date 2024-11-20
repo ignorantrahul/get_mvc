@@ -1,7 +1,6 @@
-### GET_MVC /GETM
+### GET_MVC (GETM)
 
-A Larvel artisan like command-line interface (CLI) tool for generating Model-View-Controller (MVC) files in Flutter projects using GetX. This is Dart-based command-line tool for creating and organizing Flutter plugin components such as models, views, controllers, bindings, and services. This tool automates the generation of boilerplate code following the MVC pattern and GetX standards.
-
+A Laravel Artisan-like command-line interface (CLI) tool for generating Model-View-Controller (MVC) files in Flutter projects using GetX. This Dart-based command-line tool helps in creating and organizing Flutter applications by generating models, views, controllers, bindings, and services. It automates the generation of boilerplate code following the MVC pattern and GetX standards.
 
 ## Features
 
@@ -61,83 +60,51 @@ project/
 ```
 
 ## Usage
-Usage
-Commands Overview
-Create a Component:
+
+### Commands Overview
+
+#### Create a Component:
 
 ```bash
-getm create type=filename
+getm create type=name
 ```
-type: The type of file to create. Options: model, view, controller, binding, service, or all.
-name: The base name for the file (without the extension).
-Initialize a New Flutter Project:
+
+Where:
+- `type`: The type of file to create (model, view, controller, binding, service, or all)
+- `name`: The base name for your component
+
+#### Initialize a New Flutter Project:
 
 ```bash
-getm new --project=<project-name> --org=<organization-name>
+getm new --project=my_app --org=com.example
 ```
-Display Help Information:
+
+This command creates a new Flutter project with the specified name and organization.
+
+#### Display Help Information:
 
 ```bash
 getm help
 ```
-Examples
-Generate a Model:
 
+### Examples
+
+1. Generate a Model:
 ```bash
-getm create --type=model --name=user
+getm create model=user
 ```
-This command creates a user_model.dart file with a dummy model structure.
+This creates `lib/app/models/user_model.dart` with a dummy model structure.
 
-Generate All Components for a Home Page:
-
+2. Generate All Components:
 ```bash
-getm create all=filename
+getm create all=home
 ```
-This command creates:
-
-home_model.dart
-home_view.dart
-home_controller.dart
-home_binding.dart
-home_service.dart
-Initialize a New Flutter Project:
-
-```bash
-getm new --project=my_plugin --org=com.example
-```
-This command creates a new Flutter project with the specified name and organization.
-
-`getm` provides commands to generate various MVC files in your Flutter project:
-
-<!-- ## Create a New Project
-
-```bash
-get_mvc new --n <project_name> --org <organisation_name>
-```
-
-### Create a New File
-
-```bash
-get_mvc create -t <type> -n <name>
-```
-
-Replace `<type>` with the file type (model, view, controller, service) and `<name>` with the file name (without extension).
-
-### Generate Authentication Files
-
-```bash
-get_mvc create --auth
-```
-
-This command generates authentication-related files including an authentication controller, login view, and signup view.
-
-### Help
-
-```bash
-get_mvc help -->
-```
-
-Displays usage information and lists all available commands.
+This creates the following files in their respective directories:
+- `lib/app/models/home_model.dart`
+- `lib/app/views/home_view.dart`
+- `lib/app/controllers/home_controller.dart`
+- `lib/app/bindings/home_binding.dart`
+- `lib/app/services/home_service.dart`
 
 ## Contributing
 
