@@ -1,6 +1,6 @@
 name: get_mvc
 description: "A Laravel Artisan like CLI tool for generating MVC files in Flutter projects for GetX."
-version: 1.0.3
+version: 1.0.4
 homepage: https://github.com/ignorantrahul/get_mvc
 repository: https://github.com/ignorantrahul/get_mvc.git
 
@@ -16,3 +16,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+executables:
+  get_mvc:
+  getm:
