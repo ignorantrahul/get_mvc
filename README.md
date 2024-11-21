@@ -5,7 +5,7 @@ A Laravel Artisan-like command-line interface (CLI) tool for generating Model-Vi
 ## Features
 
 - **Generate MVC Components:** Easily create models, views, controllers, bindings, and services with a single command.
-- **Complete File Structure:** Automatically organizes your plugin files into directories for efficient management.
+- **Complete File Structure:** Automatically organizes your application files into directories for efficient management.
 - **Dummy Data Generation:** Includes placeholder content for each file type to kickstart your development process.
 
 ---
@@ -21,6 +21,7 @@ Once Dart is installed, you can install `get_mvc` globally using the following c
 ```bash
 flutter pub global activate get_mvc
 ```
+
 or from Github clone the repository and run the following commands:
 
 ```bash
@@ -28,34 +29,36 @@ git clone <repository-url>
 cd <repository-directory>
 dart run
 ```
+
 Make sure to add the Dart SDK's bin directory to your system's PATH to access the installed binaries.
 
 ### Project Structure
 
 ```
 project/
-    ├── 📁 lib
-        ├── 📁 app
-        │    ├── 📁 bindings
-        │    │    ├── app_binding.dart
-        │    │    ├── ...
-        │    ├── 📁 controllers
-        │    │    ├── app_controller.dart
-        │    │    ├── ...
-        │    ├── 📁 models
-        │    │    ├── app_model.dart
-        │    │    ├── ...
-        │    ├── 📁 services
-        │    │    ├── app_service.dart
-        │    │    ├── ...
-        │    ├── 📁 views
-        │    │    ├── app_view.dart
-        │    │    ├── ...
-        │    ├── 📁 utils
-        │    │    ├── logger.dart
-        │    │    ├── ...
-        ├── main.dart
-    ├── pubspec.yaml
+    ├── lib/
+    │   ├── app/
+    │   │   ├── models/
+    │   │   │   └── home/
+    │   │   │   │   └── home_model.dart
+    │   │   │   └──.....
+    │   │   ├── views/
+    │   │   │   └── home/
+    │   │   │   │   └── home_view.dart
+    │   │   │   └──....
+    │   │   ├── controllers/
+    │   │   │   └── home/
+    │   │   │   │   └── home_controller.dart
+    │   │   │   └──....
+    │   │   ├── bindings/
+    │   │   │   └── home/
+    │   │   │   │   └── home_binding.dart
+    │   │   │   └──....
+    │   │   ├── services/
+    │   │   │   └── home/
+    │   │   │   │   └── home_service.dart
+    │   │   │   └──....
+    │   │   └── main.dart
     └── README.md
 ```
 
@@ -70,6 +73,7 @@ getm create type=name
 ```
 
 Where:
+
 - `type`: The type of file to create (model, view, controller, binding, service, or all)
 - `name`: The base name for your component
 
@@ -90,21 +94,26 @@ getm help
 ### Examples
 
 1. Generate a Model:
+
 ```bash
 getm create model=user
 ```
-This creates `lib/app/models/user_model.dart` with a dummy model structure.
+
+This creates `lib/app/models/user/user_model.dart` with a dummy model structure.
 
 2. Generate All Components:
+
 ```bash
 getm create all=home
 ```
+
 This creates the following files in their respective directories:
-- `lib/app/models/home_model.dart`
-- `lib/app/views/home_view.dart`
-- `lib/app/controllers/home_controller.dart`
-- `lib/app/bindings/home_binding.dart`
-- `lib/app/services/home_service.dart`
+
+- `lib/app/models/home/home_model.dart`
+- `lib/app/views/home/home_view.dart`
+- `lib/app/controllers/home/home_controller.dart`
+- `lib/app/bindings/home/home_binding.dart`
+- `lib/app/services/home/home_service.dart`
 
 ## Contributing
 

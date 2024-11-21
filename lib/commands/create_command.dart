@@ -1,6 +1,8 @@
-import 'package:args/args.dart';
 import 'dart:io';
+
+import 'package:args/args.dart';
 import 'package:logger/logger.dart';
+
 import '../utils/string_extensions.dart';
 
 final Logger logger = Logger();
@@ -41,7 +43,8 @@ class CreateCommand extends Command {
           generateDummyModel: type == 'model',
           generateDummyView: type == 'view',
           generateDummyController: type == 'controller',
-          generateDummyBinding: type == 'binding');
+          generateDummyBinding: type == 'binding',
+          generateDummyService: type == 'service');
       return;
     } else {
       logger.e('Unknown file type: $type');
@@ -54,7 +57,7 @@ class CreateCommand extends Command {
     _createFile('view', name, generateDummyView: true);
     _createFile('controller', name, generateDummyController: true);
     _createFile('binding', name, generateDummyBinding: true);
-    _createFile('service', name);
+    _createFile('service', name, generateDummyService: true);
     logger.i('All files for $name created successfully.');
   }
 
@@ -62,17 +65,14 @@ class CreateCommand extends Command {
       {bool generateDummyModel = false,
       bool generateDummyView = false,
       bool generateDummyController = false,
-      bool generateDummyBinding = false}) {
+      bool generateDummyBinding = false,
+      bool generateDummyService = false}) {
     final appDirectory = Directory('lib/app');
     final fileName = '${name.toLowercaseWithUnderscores()}_$type.dart';
-    final directory = Directory('${type}s');
-
-    if (!directory.existsSync()) {
-      directory.createSync(recursive: true);
-    }
-
+    final directory = Directory('${type}s/$name');
+    // No need to run createSync command multiple times insted using recursive: true
     final file = File('${appDirectory.path}/${directory.path}/$fileName');
-    file.createSync();
+    file.createSync(recursive: true);
 
     file.writeAsStringSync(
       generateDummyModel
@@ -83,14 +83,56 @@ class CreateCommand extends Command {
                   ? _generateDummyController(name)
                   : generateDummyBinding
                       ? _generateDummyBinding(name)
-                      : '',
+                      : generateDummyService
+                          ? _generateDummyService(name)
+                          : '',
     );
 
     logger.i('File created: ${file.path}');
   }
 
+  String _generateDummyBinding(String name) {
+    return '''
+// [Bindings] should be extended or implemented. When using GetMaterialApp,
+// all GetPages and navigation methods (like Get.to()) have a binding property
+// that takes an instance of Bindings to manage the dependencies() (via Get.put()) 
+//for the Route you are opening.
+
+import 'package:get/get.dart';
+import '../../controllers/$name/${name}_controller.dart';
+
+class ${name.toUpperCamelCase()}Binding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut<${name.toUpperCamelCase()}Controller>(
+      () => ${name.toUpperCamelCase()}Controller(),
+    );
+  }
+}
+    ''';
+  }
+
+  String _generateDummyController(String name) {
+    return '''
+// Controllers are responsible for:
+// 1. Managing application's all business logic
+// 2. Handling state management.
+// 3. Acting as intermediaries between Models (data) and Views (UI)
+
+import 'package:get/get.dart';
+
+class ${name.toUpperCamelCase()}Controller extends GetxController {
+  // Add your controller logic here
+}
+    ''';
+  }
+
   String _generateDummyModel(String name) {
     return '''
+// Models define the shape of your data using class properties
+// They handle converting data to and from JSON format for storage
+// They can include validation logic for the data
+
 class ${name.toUpperCamelCase()}Model {
   final int id;
   final String title;
@@ -114,51 +156,49 @@ class ${name.toUpperCamelCase()}Model {
     };
   }
 }
-    ''';
+''';
   }
 
   String _generateDummyView(String name) {
     return '''
+// Views are responsible for displaying the UI elements and handling user interactions.
+// They work in conjunction with controllers to manage the application's state and business logic.
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../controllers/$name/${name}_controller.dart';
+
 class ${name.toUpperCamelCase()}View extends GetView<${name.toUpperCamelCase()}Controller> {
+  const ${name.toUpperCamelCase()}View({super.key});
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('${name.toUpperCamelCase()}')),
-      body: Center(
+      appBar: AppBar(
+        title: const Text('${name.toUpperCamelCase()}'),
+      ),
+      body: const Center(
         child: Text('This is the ${name.toUpperCamelCase()} view'),
       ),
     );
   }
 }
-    ''';
+''';
   }
 
-  String _generateDummyController(String name) {
+  String _generateDummyService(String name) {
     return '''
+// Unlike GetxController, which serves to control events on each of its pages,
+// GetxService is not automatically disposed (nor can be removed with Get.delete()).
+// It is ideal for situations where, once started, that service will remain in memory,
+// such as Auth control for example. Only way to remove it is Get.reset().
+
 import 'package:get/get.dart';
 
-class ${name.toUpperCamelCase()}Controller extends GetxController {
-  // Add your controller logic here
+class ${name.toUpperCamelCase()}Service extends GetxService {
+  // Add your service methods here
 }
-    ''';
-  }
-
-  String _generateDummyBinding(String name) {
-    return '''
-import 'package:get/get.dart';
-import '../controllers/${name}_controller.dart';
-
-class ${name.toUpperCamelCase()}Binding extends Bindings {
-  @override
-  void dependencies() {
-    Get.lazyPut<${name.toUpperCamelCase()}Controller>(
-      () => ${name.toUpperCamelCase()}Controller(),
-    );
-  }
-}
-    ''';
+''';
   }
 }
